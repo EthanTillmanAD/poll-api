@@ -31,6 +31,7 @@ public class PollController {
         if (pollRepository.findById(pollId).isPresent()){
             Poll poll = pollRepository.findById(pollId).get();
            myPoll = poll;
+            logger.info("poll verified");
         }
 
         if (myPoll == null){
@@ -43,7 +44,9 @@ public class PollController {
     @RequestMapping(value="/polls", method=RequestMethod.GET)
     public ResponseEntity<Iterable<Poll>> getAllPolls() {
         Iterable<Poll> allPolls = pollRepository.findAll();
+        logger.info("polls listed");
         return new ResponseEntity<>(pollRepository.findAll(), HttpStatus.OK);
+
     }
 
     @RequestMapping(value="/polls", method=RequestMethod.POST)
@@ -67,7 +70,7 @@ public class PollController {
                 throw new ResoureceNotFoundException("Poll with id " + pollId + " not found");
 
             }
-
+                logger.info("getting poll #"+ pollId);
         return new ResponseEntity<> (myPoll, HttpStatus.OK);
     }
 
@@ -77,6 +80,9 @@ public class PollController {
         verifyPoll(pollId);
 
         Poll p = pollRepository.save(poll);
+
+        logger.info("poll updated" + poll);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @RequestMapping(value="/polls/{pollId}", method=RequestMethod.DELETE)
@@ -84,6 +90,8 @@ public class PollController {
         verifyPoll(pollId);
 
         pollRepository.deleteById(pollId);
+
+        logger.info("poll deleted");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
