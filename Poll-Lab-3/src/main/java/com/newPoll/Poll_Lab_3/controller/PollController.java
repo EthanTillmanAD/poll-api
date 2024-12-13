@@ -4,6 +4,7 @@ package com.newPoll.Poll_Lab_3.controller;
 import com.newPoll.Poll_Lab_3.exceptions.ResoureceNotFoundException;
 import com.newPoll.Poll_Lab_3.models.Poll;
 import com.newPoll.Poll_Lab_3.repositories.PollRepository;
+import com.newPoll.Poll_Lab_3.services.PollService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,8 @@ public class PollController {
     private final Logger logger = LoggerFactory.getLogger(PollController.class);
     @Autowired
     PollRepository pollRepository;
-
+    @Autowired
+    PollService pollService;
 
     protected void verifyPoll(Long pollId) throws ResoureceNotFoundException{
         Poll myPoll = null;
@@ -77,13 +79,14 @@ public class PollController {
 
     @RequestMapping(value="/polls/{pollId}", method=RequestMethod.PUT)
     public ResponseEntity<?> updatePoll(@RequestBody Poll poll, @PathVariable Long pollId) {
-        verifyPoll(pollId);
 
-        Poll p = pollRepository.save(poll);
+
+        verifyPoll(pollId);
+        pollService.changePoll(poll, pollId);
 
         logger.info("poll updated" + poll);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(poll,HttpStatus.ACCEPTED);
     }
     @RequestMapping(value="/polls/{pollId}", method=RequestMethod.DELETE)
     public ResponseEntity<?> deletePoll(@PathVariable Long pollId) {
@@ -92,7 +95,7 @@ public class PollController {
         pollRepository.deleteById(pollId);
 
         logger.info("poll deleted");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
