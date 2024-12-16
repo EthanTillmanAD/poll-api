@@ -65,7 +65,7 @@ public class RestExceptionHandlerr extends ResponseEntityExceptionHandler {
         ValidationError validationError = new ValidationError();
 
         validationError.setCode(ex.toString());
-        validationError.setMessage(ex.getMessage());
+        validationError.setMessage(ex.getLocalizedMessage());
 
         List<ValidationError> errors = new ArrayList<>();
 
